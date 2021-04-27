@@ -5,6 +5,7 @@ input_file: .asciiz "example.in"
 output_file: .asciiz "example.out"
 comma: .asciiz ", "
 .text
+main:
 la $a0, input_file #input_file 是一个字符串
 li $a1, 0 #flag 0为读取 1为写入
 li $a2, 0 #mode is ignored 设置为0就可以了
