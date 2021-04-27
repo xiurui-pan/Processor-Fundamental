@@ -1,8 +1,8 @@
 .data
 in_buff: .space 512
 out_buff: .space 512
-input_file: .asciiz "example.in"
-output_file: .asciiz "example.out"
+input_file: .asciiz "/Users/raypan/Documents/GitHub/Processor-Fundamental/Assmbly Lab/example/example.in"
+output_file: .asciiz "/Users/raypan/Documents/GitHub/Processor-Fundamental/Assmbly Lab/example/example.out"
 comma: .asciiz ", "
 .text
 main:
