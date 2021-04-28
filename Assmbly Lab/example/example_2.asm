@@ -5,9 +5,9 @@
     .align 4  #没有这句话可能会出错
     array: .space  512
     #以下常数数组会自动对齐到对应边界
-    barray: .byte  1,2,3,4
-    harray: .half  1,2,3,4
-    warray: .word  1,2,3,4
+    barray: .byte  1, 2, 3, 4
+    harray: .half  1, 2, 3, 4
+    warray: .word  1, 2, 3, 4
     
     
 .text
