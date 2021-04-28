@@ -40,7 +40,7 @@ main:
     li $v0, 1   #print max_num
     syscall
 
-    la $a0, output_file     #open output file !!!!I cannot open the fucking file and cannot figure out why!!!
+    la $a0, output_file     #open output file 他多写了一个0xD!!!??? 
     li $a1, 1
     li $a2, 0
     li $v0, 13
