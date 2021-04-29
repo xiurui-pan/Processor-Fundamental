@@ -27,7 +27,8 @@ main:
     addi $sp, -4
     jal dp_loop
 
-    lw $ra, 0($sp)      #restore ra in sp
+    lw $ra, 4($sp)      #restore ra in sp
+    addi $sp, 4
     move $a0, $v0       #print result
     li $v0, 1
     syscall
@@ -39,12 +40,19 @@ dp_loop:
     sll $t0, $t0, 2
     sub $t0, $zero, $t0
     add $sp, $sp, $t0   #allocate memory in stack
-    sw $zero, 0($sp)
+
+    li $t0, 0
+    init:
+        sll $t1, $t0, 2
+        add $t1, $sp, $t1
+        sw $zero, 0($t1)
+        addi $t0, 1
+        blt $t0, 0x40, init
 
     li $t0, 0   #iter1 in t0
     outer_loop:
         bge $t0, $a0, end_outer_loop
-        sll $t1, $t0, 2
+        sll $t1, $t0, 3
         add $t1, $a1, $t1   #address bias of weight in $t1
         lw $s0, 0($t1)      #weight in s0
         lw $s1, 4($t1)      #val in s1
