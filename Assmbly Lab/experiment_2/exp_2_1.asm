@@ -85,7 +85,7 @@ dp_loop:
         j outer_loop
 
     end_outer_loop:
-    sll $t1, $a2, 2     #set reture vakue
+    sll $t1, $a2, 2     #set reture value
     add $t1, $sp, $t1
     lw $v0, 0($t1)
 
