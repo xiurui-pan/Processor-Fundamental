@@ -41,16 +41,12 @@ dp_recur:
     li $t0, 1
     bne $a0, $t0, begin
     lw $t0, 0x0($a1)      #item_list[0].weight in t0
-    addi $sp, -0x8       #allocate stack memory
-    sw $t0, 0x0($sp)
     blt $a2, $t0, endif1
     lw $v0, 0x4($a1)      #ret = item_list[0].value
-    sw $v0, 0x4($sp)
     j return1
     endif1:
     li $v0, 0
     return1: 
-    addi $sp, 0x8
     jr $ra
 
     begin:
@@ -78,7 +74,7 @@ dp_recur:
     lw $a0, 0x0($sp)
     lw $a1, 0x4($sp)
     lw $a2, 0x8($sp) 
-    sw $s1, 0x10($sp)    #val_in in s1
+    sw $s1, 0x14($sp)    #val_in in s1
     move $s1, $v0
     lw $t1, 4($a1)    #load item_list[0].value in t1
     add $s1, $s1, $t1
@@ -90,11 +86,14 @@ dp_recur:
 
     return_out:
     move $v0, $s0
+    j return
+    
     return_in:
     move $v0, $s1
 
+    return:
     lw $s0, 0x10($sp)
-    lw $s1, 0x4($sp)
+    lw $s1, 0x14($sp)
     lw $ra, 0xc($sp)
     addi $sp, 0x1c
     jr $ra
