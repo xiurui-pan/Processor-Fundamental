@@ -16,7 +16,7 @@ main:
     li $a2, 4
     li $v0, 14
     syscall
-    addi $a1, 0x4
+    addi $a1, $a1, 0x4
     li $v0, 14
     syscall
     li $v0, 16  #close file
@@ -31,10 +31,10 @@ main:
         lw $t1, ($a1)   #load buffer[id] into t1
         bge $a0, $t1, flag
         move $a0, $t1   #max_num = buffer[id]
-        flag: addi $t0, 1
-        addi $a1, -0x4
+        flag: addi $t0, $t0, 1
+        addi $a1, $a1, -0x4
         blt $t0, 2, for
-    addi $a1, 0x4
+    addi $a1, $a1, 0x4
 
     move $t3, $a0   #save the max_num in t3
     li $v0, 1   #print max_num
@@ -54,5 +54,8 @@ main:
     syscall
 
     li $v0, 16
+    syscall
+
+    li $v0 17
     syscall
     jr $ra

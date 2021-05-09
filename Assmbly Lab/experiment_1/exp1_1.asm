@@ -26,7 +26,7 @@ main:
         li $s0 0    #iterator is stored in s0
         loop:
             add $v1 $v1 $s0     #sum += temp
-            addi $s0 1
+            addi $s0 $s0 1
             ble $s0 $t1 loop
         li $v0 1    #print sum
         move $a0 $v1

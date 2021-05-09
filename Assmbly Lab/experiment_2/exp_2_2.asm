@@ -22,14 +22,17 @@ main:
     la $a1, 8($a1)      #item_list in a1
 
     sw $ra, 0($sp)      #store ra in sp
-    addi $sp, -4
+    addi $sp, $sp, -4
     jal dp_search
 
-    addi $sp, 4
+    addi $sp, $sp, 4
     lw $ra, 0($sp)
     move $a0, $v0       #print result
     li $v0, 1
     syscall
+    li $v0 17
+    syscall
+    
     jr $ra
 
 dp_search:
@@ -57,7 +60,7 @@ dp_search:
             add $s2, $s2, $t4
 
             endif1:
-            addi $t1, 1
+            addi $t1, $t1, 1
             j inner_loop
 
         end_inner_loop:
@@ -66,7 +69,7 @@ dp_search:
         move $v0, $s2   #val_max = val
 
         endif2:
-        addi $t0, 1
+        addi $t0, $t0, 1
         j outer_loop
 
     end_outer_loop:

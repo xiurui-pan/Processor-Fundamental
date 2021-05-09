@@ -24,13 +24,16 @@ main:
     la $a1, 8($a1)      #item_list in a1
 
     sw $ra, 0($sp)      #store ra in sp
-    addi $sp, -4
+    addi $sp, $sp, -4
     jal dp_loop
 
     lw $ra, 4($sp)      #restore ra in sp
-    addi $sp, 4
+    addi $sp, $sp, 4
     move $a0, $v0       #print result
     li $v0, 1
+    syscall
+
+    li $v0 17
     syscall
     jr $ra
 
@@ -46,7 +49,7 @@ dp_loop:
         sll $t1, $t0, 2     #init cache_ptr array to 0
         add $t1, $sp, $t1
         sw $zero, 0($t1)
-        addi $t0, 1
+        addi $t0, $t0, 1
         blt $t0, 0x40, init
 
     li $t0, 0   #iter1 in t0
@@ -77,11 +80,11 @@ dp_loop:
             sw $t3, 0($t1)
 
             endif:
-            addi $t2, -1
+            addi $t2, $t2 -1
             j inner_loop
 
         end_inner_loop:
-        addi $t0, 1
+        addi $t0, $t0, 1
         j outer_loop
 
     end_outer_loop:

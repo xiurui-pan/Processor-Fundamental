@@ -11,7 +11,7 @@ Fib:
     #恢复现场
     lw $s0, 0x0($sp)
     lw $s1, 0x4($sp)
-    addi $s0, 8
+    addi $s0, $s0, 8
 
     jr $ra
 
@@ -34,6 +34,6 @@ Next:
     lw $a0, 0x0($sp)
     lw $s0, 0x4($sp)
     lw $s1, 0x8($sp)
-    addi $sp, 0xc
+    addi $sp, $sp, 0xc
     
     jr $ra 

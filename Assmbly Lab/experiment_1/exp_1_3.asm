@@ -22,7 +22,7 @@ main:
         sll $t2, $t1, 2     #compute bias for array index, in t2
         add $a0, $s1, $t2   #compute address for site to be stored, in a0
         sw $t0, ($a0)
-        addi $t1, 1
+        addi $t1, $t1, 1
         j for1
 
     endfor1:
@@ -35,7 +35,7 @@ main:
         add $a0, $s1, $t2
 
         sub $t2, $s0, $t1   #address of a[n-i-1] in a1
-        addi $t2, -1
+        addi $t2, $t2, -1
         sll $t2, $t2, 2
         add $a1, $s1, $t2
 
@@ -43,7 +43,7 @@ main:
         lw $t2, ($a1)
         sw $t0, ($a1)
         sw $t2, ($a0)
-        addi $t1, 1
+        addi $t1, $t1, 1
         j for2
 
     endfor2:
@@ -55,9 +55,11 @@ main:
         lw $a0, ($a1)   #a[i] in a0
         li $v0, 1       #print a[i]
         syscall 
-        addi $t1, 1
+        addi $t1, $t1, 1
         j for3
 
     endfor3:
+    li $v0 17
+    syscal
     jr $ra
 

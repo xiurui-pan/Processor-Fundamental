@@ -22,13 +22,15 @@ main:
     la $a1, 8($a1)      #item_list in a1
 
     sw $ra, 0($sp)      #store ra in sp
-    addi $sp, -4
+    addi $sp, $sp, -4
     jal dp_recur
 
-    addi $sp, 4
+    addi $sp, $sp, 4
     lw $ra, 0($sp)
     move $a0, $v0       #print result
     li $v0, 1
+    syscall
+    li $v0 17
     syscall
     jr $ra
 
@@ -50,13 +52,13 @@ dp_recur:
     jr $ra
 
     begin:
-    addi $sp, -0x1c     #save the current frame
+    addi $sp, $sp, -0x1c     #save the current frame
     sw $a0, 0x0($sp)
     sw $a1, 0x4($sp)
     sw $a2, 0x8($sp)
     sw $ra, 0xc($sp)
-    addi $a0, -1        #the first call
-    addi $a1, 8
+    addi $a0, $a0, -1        #the first call
+    addi $a1, $a1, 8
     jal dp_recur
 
     sw $s0, 0x10($sp)    #val_out in s0
@@ -67,8 +69,8 @@ dp_recur:
     lw $a2, 0x8($sp) 
     lw $t0, 0x0($a1)   #load item_list[0].weight
     sub $a2, $a2, $t0
-    addi $a0, -1
-    addi $a1, 8
+    addi $a0, $a0, -1
+    addi $a1, $a1, 8
     jal dp_recur        #the second call
 
     lw $a0, 0x0($sp)    #restore the frame
@@ -95,5 +97,5 @@ dp_recur:
     lw $s0, 0x10($sp)
     lw $s1, 0x14($sp)
     lw $ra, 0xc($sp)
-    addi $sp, 0x1c
+    addi $sp, $sp, 0x1c
     jr $ra
