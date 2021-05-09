@@ -48,12 +48,12 @@ dp_search:
             bge $t1, $a0, end_inner_loop
             srl $t2, $t0, $t1   #flag in t2
             andi $t2, 0x1
-            beq $t2, $zero, endif1
+            beq $t2, $zero, endif1 #if flag == 0
             sll $t3, $t1, 3     #address of item_list[i] in $t3
             add $t3, $t3, $a1
-            lw $t4, 0($t3)
+            lw $t4, 0($t3)  #item_list[i].weight in s1
             add $s1, $s1, $t4
-            lw $t4, 4($t3)
+            lw $t4, 4($t3)  #item_list[i].value in s2
             add $s2, $s2, $t4
 
             endif1:
@@ -61,9 +61,9 @@ dp_search:
             j inner_loop
 
         end_inner_loop:
-        bgt $s1, $a2, endif2
+        bgt $s1, $a2, endif2  #two judges
         ble $s2, $v0, endif2
-        move $v0, $s2
+        move $v0, $s2   #val_max = val
 
         endif2:
         addi $t0, 1

@@ -15,7 +15,7 @@ main:
     li $t1, 0   #iterator in t1
     for1:
         bge $t1, $s0, endfor1
-        li $v0, 5
+        li $v0, 5   #read a[i]
         syscall
         move $t0, $v0
 
@@ -50,10 +50,10 @@ main:
     li $t1, 0   #iterator in t1
     for3:
         bge $t1, $s0, endfor3
-        sll $t2, $t1, 2
+        sll $t2, $t1, 2     #compute the address bias of a[i] in a1
         add $a1, $s1, $t2
-        lw $a0, ($a1)
-        li $v0, 1
+        lw $a0, ($a1)   #a[i] in a0
+        li $v0, 1       #print a[i]
         syscall 
         addi $t1, 1
         j for3
