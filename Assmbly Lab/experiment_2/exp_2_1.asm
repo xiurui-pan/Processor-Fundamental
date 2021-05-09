@@ -2,7 +2,7 @@
     input_file: .asciiz "test.dat"
     .align 4
     in_buffer: .space 0x800
-    MAX_CAP: .byte 63
+    MAX_CAP: .byte 64
 
 .text
 main:
@@ -36,14 +36,14 @@ main:
 
 dp_loop:
     lw $t0, MAX_CAP     #address bias in $t0
-    addi $t0, 1
+    #addi $t0, 1 
     sll $t0, $t0, 2
     sub $t0, $zero, $t0
     add $sp, $sp, $t0   #allocate memory in stack
 
     li $t0, 0
     init:
-        sll $t1, $t0, 2
+        sll $t1, $t0, 2     #init cache_ptr array to 0
         add $t1, $sp, $t1
         sw $zero, 0($t1)
         addi $t0, 1
@@ -60,7 +60,7 @@ dp_loop:
         move $t2, $a2       #iter2 in t2
         inner_loop:
             bltz $t2, end_inner_loop
-            blt $t2, $s0, endif
+            blt $t2, $s0, endif #if j >= weight
             sll $t1, $t2, 2     #address of cache_ptr[j] in t1
             add $t1, $sp, $t1
             
@@ -90,7 +90,7 @@ dp_loop:
     lw $v0, 0($t1)
 
     lw $t0, MAX_CAP     #restore sp
-    addi $t0, 1
+    #addi $t0, 1
     sll $t0, $t0, 2
     add $sp, $sp, $t0
     jr $ra

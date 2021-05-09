@@ -9,13 +9,13 @@ main:
     syscall
     move $t1 $v0
 
-    bgez $t0 flag   #whether i and j is negative
-    sub $t0 $0 $t0
-    flag: bgez $t1 swap
-    sub $t1 $0 $t1
+    bgez $t0 flag   #whether i is negative
+    sub $t0 $0 $t0  #set i to -i
+    flag: bgez $t1 swap   #whether j is negative
+    sub $t1 $0 $t1  #set j to -j
 
     swap:
-        ble $t1 $t0 sum
+        ble $t1 $t0 sum     #whether j > i
         move $t2 $t0
         move $t3 $t1
         move $t0 $t3
@@ -25,7 +25,7 @@ main:
         li $v1 0    #sum is stored in v1
         li $s0 0    #iterator is stored in s0
         loop:
-            add $v1 $v1 $s0
+            add $v1 $v1 $s0     #sum += temp
             addi $s0 1
             ble $s0 $t1 loop
         li $v0 1    #print sum

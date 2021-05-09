@@ -33,11 +33,11 @@ main:
     jr $ra
 
 dp_recur:
-    bnez $a0, equal1
+    bnez $a0, equal1    #if item_num == 0
     li $v0, 0
     jr $ra
 
-    equal1:    
+    equal1:             #if item_num == 1
     li $t0, 1
     bne $a0, $t0, begin
     lw $t0, 0x0($a1)      #item_list[0].weight in t0
@@ -50,28 +50,28 @@ dp_recur:
     jr $ra
 
     begin:
-    addi $sp, -0x1c
+    addi $sp, -0x1c     #save the current frame
     sw $a0, 0x0($sp)
     sw $a1, 0x4($sp)
     sw $a2, 0x8($sp)
     sw $ra, 0xc($sp)
-    addi $a0, -1
+    addi $a0, -1        #the first call
     addi $a1, 8
     jal dp_recur
 
     sw $s0, 0x10($sp)    #val_out in s0
     move $s0, $v0
 
-    lw $a0, 0x0($sp)
+    lw $a0, 0x0($sp)    #restore the frame
     lw $a1, 0x4($sp)
     lw $a2, 0x8($sp) 
     lw $t0, 0x0($a1)   #load item_list[0].weight
     sub $a2, $a2, $t0
     addi $a0, -1
     addi $a1, 8
-    jal dp_recur
+    jal dp_recur        #the second call
 
-    lw $a0, 0x0($sp)
+    lw $a0, 0x0($sp)    #restore the frame
     lw $a1, 0x4($sp)
     lw $a2, 0x8($sp) 
     sw $s1, 0x14($sp)    #val_in in s1
