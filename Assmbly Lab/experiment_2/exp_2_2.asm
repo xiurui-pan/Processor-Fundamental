@@ -40,7 +40,7 @@ dp_search:
 
     li $t0, 0       #state_cnt in t0
     li $s0, 1
-    sll $s0, $s0, $a0   #0x1 << item_num in s0  
+    sllv $s0, $s0, $a0   #0x1 << item_num in s0  
     outer_loop:
         bge $t0, $s0, end_outer_loop
         li $s1, 0   #weight in s1
