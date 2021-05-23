@@ -57,8 +57,8 @@ module InstAndDataMemory(reset, clk, Address, Write_data, MemRead, MemWrite, Mem
             RAM_data[8'd3] <= {6'h00, 5'd0 , 5'd6 , 5'd7 , 5'd16 , 6'h03};
             // beq $a3, $a1, L1
             RAM_data[8'd4] <= {6'h04, 5'd7 , 5'd5 , 16'h0001};
-            // lui $a0, -22222 #(0xa932)
-            RAM_data[8'd5] <= {6'h0f, 5'd0 , 5'd4 , 16'ha932};
+            // lui $a0, 22222 #(0x56ce)
+            RAM_data[8'd5] <= {6'h0f, 5'd0 , 5'd4 , 16'h56ce};
             // L1:
             // add $t0, $a2, $a0
             RAM_data[8'd6] <= {6'h00, 5'd6 , 5'd4 , 5'd8 , 5'd0 , 6'h20};
