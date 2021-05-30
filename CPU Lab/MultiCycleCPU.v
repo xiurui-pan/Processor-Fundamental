@@ -26,12 +26,6 @@ module MultiCycleCPU (reset, clk);
 
     reg  [31:0] PC;
     wire [31:0] PC_next;
-    always @(posedge reset or posedge clk) begin
-        if(reset)
-            PC <= 32'h0;
-        else if(PCWrite | (PCWriteCond & zero))
-            PC <= PC_next;
-    end
 
     wire PCWrite;
     wire PCWriteCond;
@@ -52,6 +46,8 @@ module MultiCycleCPU (reset, clk);
 
     wire [31:0] Address;
     wire [31:0] MemData;
+
+    PC PCCtrl(reset, clk, PCWrite, PC_next, PC);
 
     Controller control(
         .reset(reset), .clk(clk), .OpCode(MemData[31:26]), .Funct(MemData[5:0]), .PCSrc(PCSrc),
@@ -75,7 +71,7 @@ module MultiCycleCPU (reset, clk);
     wire [4:0]  Write_reg;
     wire [31:0] RF1o, RF2o;
     assign Write_reg = (RegDst == 2'b00) ? rt :  (RegDst == 2'b01) ? rd : 5'b11111;
-    assign Databus3 = (MemtoReg == 2'b00) ? MDRo : (MemtoReg == 2'b01) ? ALU_outo : PC;
+    assign Databus3 = (MemtoReg == 2'b00) ? MDRo : (MemtoReg == 2'b01) ? ALU_outo : (MemtoReg == 2'b10) ? PC : LUI_out;
     RegisterFile RF(.reset(reset), .clk(clk), .RegWrite(RegWrite), 
                     .Read_register1(rs), .Read_register2(rt), .Write_register(Write_reg), 
                     .Write_data(Databus3), .Read_data1(Databus1), .Read_data2(Databus2));
@@ -83,10 +79,8 @@ module MultiCycleCPU (reset, clk);
     RegTemp rRF_B(reset, clk, Databus2, RF2o);
 
     wire [31:0] Ext_out;
-    assign Ext_out = {ExtOp ? {16{MemData[15]}} : 16'h0000, MemData[15:0]};
-
     wire [31:0] LUI_out;
-    assign LUI_out = LuiOp ? {MemData[15:0], 16'h0000} : Ext_out;
+    ImmProcess ImmProcess(ExtOp, LuiOp, MemData[15:0], Ext_out, LUI_out);
 
     RegTemp rALUOut(reset, clk, ALU_outi, ALU_outo);
     wire [31:0] ALU_in1;
@@ -97,11 +91,11 @@ module MultiCycleCPU (reset, clk);
     ALUControl ALUControl(.ALUOp(ALUOp), .Funct(Funct), .ALUConf(ALUConf), .Sign(sign));
 
     assign ALU_in1 = ALUSrcA ? RF1o : PC;
-    assign ALU_in2 = (ALUSrcB == 2'b00) ? RF2o : (ALUSrcB == 2'b01) ? 32'd4 : (ALUSrcB == 2'b10) ? {16'h0, MemData[15:0]} : {16'h0, MemData[15:0]} << 2;
+    assign ALU_in2 = (ALUSrcB == 2'b00) ? RF2o : (ALUSrcB == 2'b01) ? 32'd4 : (ALUSrcB == 2'b10) ? Ext_out : LUI_out;
     ALU ALU(.ALUConf(ALUConf), .Sign(sign), .In1(ALU_in1), .In2(ALU_in2), .Zero(zero), .Result(ALU_outi));
 
     wire [31:0] Jump_target, Branch_target;
-    assign Jump_target = {PC[31:28], {MemData[25:0]}, 2'b00};
+    assign Jump_target = (OpCode == 6'h00) ? RF1o : {PC[31:28], {MemData[25:0]}, 2'b00};
     assign Branch_target = zero ? (ALU_outo) : (PC + 4); 
     assign PC_next = (PCSrc == 2'b00) ? ALU_outi : (PCSrc == 2'b01) ? Branch_target : Jump_target;
 

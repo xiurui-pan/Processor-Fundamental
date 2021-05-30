@@ -57,6 +57,8 @@ module Controller(reset, clk, OpCode, Funct,
     parameter sExe = 6;
     parameter sBranchComp = 7;
     parameter sJumpComp = 8;
+    parameter start = 9;
+    parameter finish = 9;
 
     parameter lw = 6'h23, sw = 6'h2b, lui = 6'h0f, R_type = 6'h00;
     parameter addi = 6'h08, addiu = 6'h09, andi = 6'h0c, slti = 6'h0a, sltiu = 6'h0b;
@@ -80,11 +82,12 @@ module Controller(reset, clk, OpCode, Funct,
             ALUSrcA <= 0;
             ALUSrcB <= 2'b00;
             PCSource <= 2'b00;
-            state <= 0;
+            state <= start;
         end
         else begin
             case(state)
-            sIF: begin
+
+            start: begin
                 MemRead <= 1;
                 IRWrite <= 1;
                 PCWrite <= 1;
@@ -92,33 +95,127 @@ module Controller(reset, clk, OpCode, Funct,
                 ALUSrcA <= 0;
                 IorD <= 0;
                 ALUSrcB <= 2'b01;
-                state <= sID;
+                state <= sIF;
             end
-            sID: begin
+
+            sIF: begin
                 ALUSrcA <= 0;
                 ALUSrcB <= 2'b11;
                 ALUOp <= 4'b0000;
-                case(OpCode)
-                    R_type, addi, addiu, andi, slti, sltiu: state <= sExe;
-                    j: state <= sJumpComp;
-                    jal: state <= sRegWriteBack;
-                    beq: state <= sBranchComp;
-                    lw, sw: state <= sMemAddrComp;
-                    lui: 
-                endcase
+                state <= sID;
             end
-            sRegWriteBack: begin
-                RegWrite <= 1;
+
+            sID: begin
                 case(OpCode)
+                    R_type, addi, addiu, andi, slti, sltiu, lui: begin 
+                        ALUSrcA <= 1;
+                        case(OpCode) 
+                            addi, andi, slti: begin
+                                ExtOp <= 1;
+                                LuiOp <= 0;
+                                ALUSrcB <= 10;
+                                state <= sExe;
+                            end
+                            lui: begin
+                                ExtOp <= 1;
+                                LuiOp <= 1;
+                                ALUSrcB <= 10;
+                                state <= sExe;
+                            end
+                            addiu, sltiu: begin
+                                ExtOp <= 0;
+                                LuiOp <= 0;
+                                ALUSrcB <= 10;
+                                state <= sExe;
+                            end
+                            R_type: begin
+                                if(Funct == jr_f)begin
+                                    PCWrite <= 1;
+                                    PCSource <= 2'b10;
+                                    state <= finish; 
+                                end
+                                else if(Funct == jalr_f)begin
+                                    RegWrite <= 1;
+                                    RegDst <= 2'b01;
+                                    MemtoReg <= 2'b10;
+                                    state <= sRegWriteBack; 
+                                end
+                                else begin
+                                    ExtOp <= 0;
+                                    LuiOp <= 0;
+                                    ALUSrcB <= 00; 
+                                    state <= sExe;
+                                end
+                            end
+                        endcase
+                    end
+                    j: begin 
+                        PCWrite <= 1;
+                        PCSource <= 2'b10;
+                        state <= finish;
+                    end
                     jal: begin
+                        RegWrite <= 1;
                         RegDst <= 2'b10;
                         MemtoReg <= 2'b10;
+                        state <= sRegWriteBack;
                     end
-
-
+                    beq: begin
+                        PCWriteCond <= 1;
+                        ALUSrcA <= 1;
+                        ALUSrcB <= 2'b00;
+                        PCSource <= 2'b01;
+                        state <= finish;
+                    end
+                    lw, sw: begin
+                        ALUSrcA <= 2'b01;
+                        ALUSrcB <= 2'b10;
+                        state <= sMemAddrComp;
+                    end
                 endcase
-
             end
+
+            sExe: begin
+                RegWrite <= 1;
+                RegDst <= 2'b01;
+                MemtoReg <= 2'b01;
+                state <= finish;
+            end
+
+            sMemAddrComp: begin
+                if(OpCode == lw)begin
+                    MemRead <= 1;
+                    IorD <= 1;
+                    state <= sMemRead;
+                end
+                else if(OpCode == sw)begin
+                    MemWrite <= 1;
+                    IorD <= 1;
+                    state <= finish;
+                end
+            end
+
+            sRegWriteBack: begin
+                case(OpCode)
+                    jal: begin
+                        PCWrite <= 1;
+                        PCSource <= 2'b10;
+                        state <= finish;
+                    end
+                    R_type:begin
+                        PCWrite <= 1;
+                        PCSource <= 2'b10;
+                        state <= finish; 
+                    end
+                endcase
+            end
+
+            sMemRead: begin
+                RegDst <= 2'b00;
+                MemtoReg <= 2'b00;
+                state <= sRegWriteBack;
+            end
+
             endcase
         end
     end
