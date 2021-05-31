@@ -66,6 +66,8 @@ module Controller(reset, clk, OpCode, Funct,
 
     parameter add_f = 6'h20, addu_f = 6'h21, sub_f = 6'h22, subu_f = 6'h23, and_f = 6'h24, or_f = 6'h25, xor_f = 6'h26, nor_f = 6'h27, sll_f = 6'h0, srl_f = 6'h02, sra_f = 6'h03, slt_f = 6'h2a, sltu_f = 6'h2b, jr_f = 6'h08, jalr_f = 6'h09;
 
+    reg fuck = 0;
+
     always @(posedge clk or posedge reset) begin
         if(reset)begin
             PCWrite <= 0;
@@ -88,9 +90,12 @@ module Controller(reset, clk, OpCode, Funct,
             case(state)
 
             start: begin
+                RegWrite <= 0;
+                MemWrite <= 0;
                 MemRead <= 1;
                 IRWrite <= 1;
                 PCWrite <= 1;
+                PCWriteCond <= 0;
                 PCSource <= 2'b00;
                 ALUSrcA <= 0;
                 IorD <= 0;
@@ -99,6 +104,9 @@ module Controller(reset, clk, OpCode, Funct,
             end
 
             sIF: begin
+                MemRead <= 0;
+                IRWrite <= 0;
+                PCWrite <= 0; 
                 ALUSrcA <= 0;
                 ALUSrcB <= 2'b11;
                 ALUOp <= 4'b0000;
@@ -113,7 +121,7 @@ module Controller(reset, clk, OpCode, Funct,
                                 ALUSrcA <= 2'b01;
                                 ExtOp <= 1;
                                 LuiOp <= 0;
-                                ALUSrcB <= 10;
+                                ALUSrcB <= 2'b10;
                                 state <= sExe;
                             end
                             lui: begin
@@ -125,7 +133,7 @@ module Controller(reset, clk, OpCode, Funct,
                             end
                             addiu, sltiu: begin
                                 ALUSrcA <= 2'b01;
-                                ExtOp <= 0;
+                                ExtOp <= 1;
                                 LuiOp <= 0;
                                 ALUSrcB <= 2'b10;
                                 state <= sExe;
@@ -144,12 +152,15 @@ module Controller(reset, clk, OpCode, Funct,
                                 end
                                 else begin
                                     case(Funct)
-                                    sll_f, sra_f, srl_f:
+                                    sll_f, sra_f, srl_f: begin
+                                        ExtOp <= 0;
                                         ALUSrcA <= 2'b10;
-                                    default:
+                                    end
+                                    default: begin
+                                        ExtOp <= 1;
                                         ALUSrcA <= 2'b01;    
+                                    end
                                     endcase
-                                    ExtOp <= 0;
                                     LuiOp <= 0;
                                     ALUSrcB <= 00; 
                                     state <= sExe;
@@ -184,8 +195,13 @@ module Controller(reset, clk, OpCode, Funct,
             end
 
             sExe: begin
+                case(OpCode)
+                    addi, addiu, andi, slti, sltiu, lui:
+                        RegDst <= 2'b00;
+                    default:
+                        RegDst <= 2'b01;
+                endcase
                 RegWrite <= 1;
-                RegDst <= 2'b01;
                 MemtoReg <= 2'b01;
                 state <= finish;
             end
@@ -204,6 +220,7 @@ module Controller(reset, clk, OpCode, Funct,
             end
 
             sRegWriteBack: begin
+                RegWrite <= 0;
                 case(OpCode)
                     jal: begin
                         PCWrite <= 1;
@@ -219,6 +236,7 @@ module Controller(reset, clk, OpCode, Funct,
             end
 
             sMemRead: begin
+                MemRead <= 1; //这里MemRead需要设置为0吗？
                 RegDst <= 2'b00;
                 MemtoReg <= 2'b00;
                 state <= sRegWriteBack;
