@@ -90,7 +90,7 @@ module MultiCycleCPU (reset, clk);
     wire zero, sign;
     ALUControl ALUControl(.ALUOp(ALUOp), .Funct(Funct), .ALUConf(ALUConf), .Sign(sign));
 
-    assign ALU_in1 = ALUSrcA ? RF1o : PC;
+    assign ALU_in1 = (ALUSrcA == 2'b01) ? RF1o : (ALUSrcA == 2'b00) ? PC : Shamt;
     assign ALU_in2 = (ALUSrcB == 2'b00) ? RF2o : (ALUSrcB == 2'b01) ? 32'd4 : (ALUSrcB == 2'b10) ? Ext_out : LUI_out;
     ALU ALU(.ALUConf(ALUConf), .Sign(sign), .In1(ALU_in1), .In2(ALU_in2), .Zero(zero), .Result(ALU_outi));
 

@@ -108,24 +108,26 @@ module Controller(reset, clk, OpCode, Funct,
             sID: begin
                 case(OpCode)
                     R_type, addi, addiu, andi, slti, sltiu, lui: begin 
-                        ALUSrcA <= 1;
                         case(OpCode) 
                             addi, andi, slti: begin
+                                ALUSrcA <= 2'b01;
                                 ExtOp <= 1;
                                 LuiOp <= 0;
                                 ALUSrcB <= 10;
                                 state <= sExe;
                             end
                             lui: begin
+                                ALUSrcA <= 2'b01;
                                 ExtOp <= 1;
                                 LuiOp <= 1;
-                                ALUSrcB <= 10;
+                                ALUSrcB <= 2'b10;
                                 state <= sExe;
                             end
                             addiu, sltiu: begin
+                                ALUSrcA <= 2'b01;
                                 ExtOp <= 0;
                                 LuiOp <= 0;
-                                ALUSrcB <= 10;
+                                ALUSrcB <= 2'b10;
                                 state <= sExe;
                             end
                             R_type: begin
@@ -141,6 +143,12 @@ module Controller(reset, clk, OpCode, Funct,
                                     state <= sRegWriteBack; 
                                 end
                                 else begin
+                                    case(Funct)
+                                    sll_f, sra_f, srl_f:
+                                        ALUSrcA <= 2'b10;
+                                    default:
+                                        ALUSrcA <= 2'b01;    
+                                    endcase
                                     ExtOp <= 0;
                                     LuiOp <= 0;
                                     ALUSrcB <= 00; 
@@ -162,7 +170,7 @@ module Controller(reset, clk, OpCode, Funct,
                     end
                     beq: begin
                         PCWriteCond <= 1;
-                        ALUSrcA <= 1;
+                        ALUSrcA <= 2'b01;
                         ALUSrcB <= 2'b00;
                         PCSource <= 2'b01;
                         state <= finish;
