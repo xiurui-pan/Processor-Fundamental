@@ -64,7 +64,7 @@ module Controller(reset, clk, OpCode, Funct,
     parameter addi = 6'h08, addiu = 6'h09, andi = 6'h0c, slti = 6'h0a, sltiu = 6'h0b;
     parameter beq = 6'h04, j = 6'h02, jal = 6'h03;
 
-    parameter add_f = 6'h20, addu_f = 6'h21, sub_f = 6'h22, subu_f = 6'h23, and_f = 6'h24, or_f = 6'h25, xor_f = 6'h26, nor_f = 6'h27, sll_f = 6'h0, srl_f = 6'h02, sra_f = 6'h03, slt_f = 6'h2a, sltu_f = 6'h2b, jr_f = 6'h08, jalr_f = 6'h09;
+    parameter add_f = 6'h20, addu_f = 6'h21, sub_f = 6'h22, subu_f = 6'h23, and_f = 6'h24, or_f = 6'h25, xor_f = 6'h26, nor_f = 6'h27, sll_f = 6'h0, srl_f = 6'h02, sra_f = 6'h03, slt_f = 6'h2a, sltu_f = 6'h2b, jr_f = 6'h08, jalr_f = 6'h09, subset_f = 6'h30;
 
     reg fuck = 0;
 
