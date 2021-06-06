@@ -109,7 +109,6 @@ module Controller(reset, clk, OpCode, Funct,
                 PCWrite <= 0; 
                 ALUSrcA <= 0;
                 ALUSrcB <= 2'b11;
-                ALUOp <= 4'b0000;
                 state <= sID;
             end
 
