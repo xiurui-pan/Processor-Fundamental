@@ -116,7 +116,7 @@ module Controller(reset, clk, OpCode, Funct,
                 case(OpCode)
                     R_type, addi, addiu, andi, slti, sltiu, lui: begin 
                         case(OpCode) 
-                            addi, andi, slti: begin
+                            addi, andi, slti, addiu, sltiu: begin
                                 ALUSrcA <= 2'b01;
                                 ExtOp <= 1;
                                 LuiOp <= 0;
@@ -127,13 +127,6 @@ module Controller(reset, clk, OpCode, Funct,
                                 ALUSrcA <= 2'b01;
                                 ExtOp <= 1;
                                 LuiOp <= 1;
-                                ALUSrcB <= 2'b10;
-                                state <= sExe;
-                            end
-                            addiu, sltiu: begin
-                                ALUSrcA <= 2'b01;
-                                ExtOp <= 1;
-                                LuiOp <= 0;
                                 ALUSrcB <= 2'b10;
                                 state <= sExe;
                             end
@@ -220,25 +213,16 @@ module Controller(reset, clk, OpCode, Funct,
 
             sRegWriteBack: begin
                 RegWrite <= 0;
-                case(OpCode)
-                    jal: begin
-                        PCWrite <= 1;
-                        PCSource <= 2'b10;
-                        state <= finish;
-                    end
-                    R_type:begin
-                        PCWrite <= 1;
-                        PCSource <= 2'b10;
-                        state <= finish; 
-                    end
-                endcase
+                PCWrite <= 1;
+                PCSource <= 2'b10;
+                state <= finish;
             end
 
             sMemRead: begin
-                MemRead <= 1; //这里MemRead需要设置为0吗？
+                RegWrite <= 1;
                 RegDst <= 2'b00;
                 MemtoReg <= 2'b00;
-                state <= sRegWriteBack;
+                state <= finish;
             end
 
             endcase
