@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module RegisterFile(reset, clk, RegWrite, Read_register1, Read_register2, Write_register, Write_data, Read_data1, Read_data2);
+module RegisterFile(reset, clk, RegWrite, Read_register1, Read_register2, Write_register, Write_data, Read_data1, Read_data2, a0, v0, sp, ra);
 	//Input Clock Signals
 	input reset;
 	input clk;
@@ -34,12 +34,21 @@ module RegisterFile(reset, clk, RegWrite, Read_register1, Read_register2, Write_
 	//Output Data Signals
 	output [31:0] Read_data1;
 	output [31:0] Read_data2;
+	output [15:0] a0;
+    output [15:0] v0;
+    output [15:0] sp;
+    output [15:0] ra;
 	
 	reg [31:0] RF_data[31:1];
 	
 	//read data
 	assign Read_data1 = (Read_register1 == 5'b00000)? 32'h00000000: RF_data[Read_register1];
 	assign Read_data2 = (Read_register2 == 5'b00000)? 32'h00000000: RF_data[Read_register2];
+
+	assign a0 = RF_data[4][15:0];
+	assign v0 = RF_data[2][15:0];
+	assign sp = RF_data[29][15:0];
+	assign ra = RF_data[31][15:0];
 	
 	integer i;
 	always @(posedge reset or posedge clk) begin

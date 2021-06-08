@@ -19,10 +19,17 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module MultiCycleCPU (reset, clk);
+module MultiCycleCPU (reset, clk, a0, v0, sp, ra, lowPC);
     //Input Clock Signals
     input reset;
     input clk;
+
+    output [15:0] a0;
+    output [15:0] v0;
+    output [15:0] sp;
+    output [15:0] ra;
+    output [7:0] lowPC;
+    assign lowPC = PC_now[7:0];
 
     wire [31:0] PC_now;
     wire [31:0] PC_next;
@@ -82,7 +89,8 @@ module MultiCycleCPU (reset, clk);
     assign Databus3 = (MemtoReg == 2'b00) ? MDRo : (MemtoReg == 2'b01) ? ALU_outo : (MemtoReg == 2'b10) ? PC_now : LUI_out;
     RegisterFile RF(.reset(reset), .clk(clk), .RegWrite(RegWrite), 
                     .Read_register1(rs), .Read_register2(rt), .Write_register(Write_reg), 
-                    .Write_data(Databus3), .Read_data1(Databus1), .Read_data2(Databus2));
+                    .Write_data(Databus3), .Read_data1(Databus1), .Read_data2(Databus2),
+                    .a0(a0), .v0(v0), .sp(sp), .ra(ra));
     RegTemp rRF_A(reset, clk, Databus1, RF1o);
     RegTemp rRF_B(reset, clk, Databus2, RF2o);
 
