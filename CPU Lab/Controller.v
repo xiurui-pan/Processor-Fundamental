@@ -236,10 +236,11 @@ module Controller(reset, clk, OpCode, Funct,
             end
 
             sMemRead: begin
-                MemRead <= 1; //这里MemRead需要设置为0吗？
+                MemRead <= 0; //这里MemRead需要设置为0吗？
+                RegWrite <= 1;
                 RegDst <= 2'b00;
                 MemtoReg <= 2'b00;
-                state <= sRegWriteBack;
+                state <= finish;
             end
 
             endcase
