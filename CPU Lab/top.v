@@ -9,8 +9,9 @@ module top(
     output [3:0] AN
 );
 
-    parameter bcd_clock_div = 23'd5000000; //1s
-    parameter an_clock_div  = 23'd500;
+    parameter bcd_clock_div = 32'd5000000; //1s
+    //parameter bcd_clock_div = 23'd10;
+    parameter an_clock_div  = 32'd500;
 
     wire [15:0] a0;
     wire [15:0] v0;

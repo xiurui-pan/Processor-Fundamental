@@ -29,7 +29,6 @@ module MultiCycleCPU (reset, clk, a0, v0, sp, ra, lowPC);
     output [15:0] sp;
     output [15:0] ra;
     output [7:0] lowPC;
-    assign lowPC = PC_now[7:0];
 
     wire [31:0] PC_now;
     wire [31:0] PC_next;
@@ -62,6 +61,7 @@ module MultiCycleCPU (reset, clk, a0, v0, sp, ra, lowPC);
     wire [4:0] rs, rt, rd, Shamt;
     wire zero, sign;
     wire realPCWrite;
+    assign lowPC = PC_now[7:0];
 
     assign realPCWrite = PCWrite ? 1 : (PCWriteCond == 1 & zero == 1) ? 1 : 0; 
     PC PCCtrl(reset, clk, realPCWrite, PC_next, PC_now);

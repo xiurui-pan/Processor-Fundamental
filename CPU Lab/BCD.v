@@ -10,9 +10,9 @@ module BCD (
     output reg  dot
 );
 
-reg[3:0]  cnt;
-reg[1:0]  an_cnt;
-reg[3:0]  an;
+reg[3:0]  cnt = 0;
+reg[1:0]  an_cnt = 0;
+reg[3:0]  an = 0;
 
 assign ano = an;
 

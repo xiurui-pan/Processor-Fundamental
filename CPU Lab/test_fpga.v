@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 0.01ns / 1ps
 
 module test_fpga();
     
@@ -12,7 +12,7 @@ module test_fpga();
     wire   [7:0]    Cathodes;
     wire   [3:0]    AN;
     
-    top top(sysclk,LED,BTND,BTNU,Cathodes,AN,SW0,SW1);
+    top top(sysclk, BTND, BTNU, SW0, SW1, LED, Cathodes, AN);
     
     initial fork
         BTNU <= 1;
