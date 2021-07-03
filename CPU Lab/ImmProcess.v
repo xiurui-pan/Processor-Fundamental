@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module ImmProcess(ExtOp, LuiOp, Immediate, ImmExtOut, ImmExtShift); 
+module ImmProcess(ExtOp, LuiOp, Immediate, ImmExtOut); 
     //Input Control Signals
     input ExtOp; //'0'-zero extension, '1'-signed extension
     input LuiOp; //for lui instruction
@@ -28,7 +28,6 @@ module ImmProcess(ExtOp, LuiOp, Immediate, ImmExtOut, ImmExtShift);
     input [15:0] Immediate;
     //Output
     output [31:0] ImmExtOut;
-    output [31:0] ImmExtShift;
 
     wire [31:0] ImmExt;
     

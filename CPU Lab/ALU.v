@@ -20,19 +20,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module ALU(ALUConf, Sign, In1, In2, Zero, Result);
+module ALU(ALUConf, Sign, In1, In2, Comp, Result, Branch);
     // Control Signals
     input [4:0] ALUConf;
+	input [2:0] Branch;
     input Sign;
     // Input Data Signals
     input [31:0] In1;
     input [31:0] In2;
     // Output 
-    output Zero;
+    output reg Comp;
     output reg [31:0] Result;
-
-    //Zero logic
-    assign Zero = (Result == 0);
 
     //ALU logic
     wire [1:0] ss;
@@ -44,6 +42,17 @@ module ALU(ALUConf, Sign, In1, In2, Zero, Result);
 	wire lt_signed;
 	assign lt_signed = (In1[31] ^ In2[31])? 
 		((ss == 2'b01)? 0: 1): lt_31;
+
+	always @(*) begin
+		case(Branch)
+			3'b100: Comp <= (In1 == In2) ? 1 : 0;
+			3'b101: Comp <= (In1 != In2) ? 1 : 0;
+			3'b110: Comp <= (In1[31]==1 || In1==0) ? 1 : 0;
+			3'b111: Comp <= (In1[31]==0 && In1!=0) ? 1 : 0;
+			3'b001: Comp <= (In1[31]==1) ? 1 : 0;
+			default: Comp <= 0;
+		endcase
+	end
 
     always @(*) begin
 		case (ALUConf)

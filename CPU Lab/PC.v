@@ -19,26 +19,31 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module PC(reset, clk, PCWrite, PC_i, PC_o);
+module PC(reset, clk, illop, xadr, PC_i, PC_o);
     //Input Clock Signals
     input reset;             
     input clk;
     //Input Control Signals             
-    input PCWrite;
+    input illop, xadr;
     //Input PC             
     input [31:0] PC_i;
     //Output PC  
     output reg [31:0] PC_o; 
 
+    parameter RESET = 32'h80000000;
+    parameter ILLOP = 32'h80000004;
+    parameter XADR = 32'h80000008;
 
     always@(posedge reset or posedge clk)
     begin
         if(reset) begin
-            PC_o <= 0;
-        end else if (PCWrite) begin
-            PC_o <= PC_i;
+            PC_o <= RESET;
+        end else if (illop) begin
+            PC_o <= ILLOP;
+        end else if(xadr)begin
+            PC_o <= XADR;
         end else begin
-            PC_o <= PC_o;
+            PC_o <= PC_i;
         end
     end
 endmodule
