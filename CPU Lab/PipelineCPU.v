@@ -50,6 +50,7 @@ module Pipeline_CPU (reset, clk);
     wire [1:0] IDRegDst;
     wire [2:0] IDBranch;
     wire [3:0] IDALUOp;
+    wire [31:0] IDDatabus1, IDDatabus2;
     wire ExtOp, LuiOp;
 
     //assign realPCWrite = PCWrite ? 1 : (PCWriteCond == 1 & zero == 1) ? 1 : 0; 
@@ -65,12 +66,11 @@ module Pipeline_CPU (reset, clk);
 
     wire [31:0] Jump_target, Branch_target;
     assign Jump_target = (IDPCSrc==2'b10 && IDInstruction[31:26]==0) ? IDDatabus1 : (IDPCSrc==2'b10) ? {IDPC[31:28], IDInstruction[25:0], 2'b00} : PC_now + 4;
-    assign Branch_target = (EXBranch==1 && comp==1) ? EXPC + 32'b100 + {EXExt_out[29:0], 2'b00} : EXPC; //这里不对劲，ID阶段？
+
 
     wire [31:0] WBMDRo;
 
     //WB
-    wire [31:0] IDDatabus1, IDDatabus2;
     wire [31:0] WBDatabus3, WBALU_out, WBPC;
     wire [4:0] WBWrite_Reg;
     wire [1:0] WBMemtoReg;
@@ -78,7 +78,7 @@ module Pipeline_CPU (reset, clk);
 
     assign WBDatabus3 = (WBMemtoReg == 2'b00) ? WBMDRo : (WBMemtoReg == 2'b01) ? WBALU_out : (WBMemtoReg == 2'b10) ? {1'b0, WBPC[30:0]} + 32'd8 : WBPC;
     RegisterFile RF(.reset(reset), .clk(clk), .RegWrite(WBRegWrite), 
-                    .Read_register1(IDInstruction[25:21]), .Read_register2(IDInstruction[20:16]), .Write_register(WBWrite_reg), 
+                    .Read_register1(IDInstruction[25:21]), .Read_register2(IDInstruction[20:16]), .Write_register(WBWrite_Reg), 
                     .Write_data(WBDatabus3), .Read_data1(IDDatabus1), .Read_data2(IDDatabus2));
 
     // ID/EX
@@ -88,6 +88,7 @@ module Pipeline_CPU (reset, clk);
     wire [1:0] EXRegDst;
     wire [1:0] EXMemtoReg;
     wire [2:0] EXBranch;
+    wire [3:0] EXALUOp;
     wire [4:0] EXrs, EXrt, EXrd, EXShamt;
     wire [5:0] EXFunct;
     wire [31:0] EXPC, EXDatabus1, EXDatabus2, EXExt_out;
@@ -105,6 +106,8 @@ module Pipeline_CPU (reset, clk);
     wire [31:0] MEMALUOut;
     wire [31:0] ForwardAIn, ForwardBIn;
 
+    assign Branch_target = (EXBranch==1 && comp==1) ? EXPC + 32'b100 + {EXExt_out[29:0], 2'b00} : EXPC; //这里�?对劲，ID阶段？
+    
     assign EXWrite_Reg = (EXRegDst == 2'b00) ? EXrt :  (EXRegDst == 2'b01) ? EXrd : 5'b11111;
     ALUControl ALUControl(.ALUOp(EXALUOp), .Funct(EXFunct), .ALUConf(ALUConf), .Sign(sign));
 
@@ -124,17 +127,20 @@ module Pipeline_CPU (reset, clk);
     wire MEMMemRead, MEMMemWrite;
     wire [1:0] MEMMemtoReg;
     wire [4:0] MEMWrite_Reg;
-    wire [31:0] MEMPC, MDRi, MDRo;
+    wire [31:0] MEMPC, MDRi, MDRo, MEMDatabus3;
 
     EXMEMReg EXMEMReg(.clk(clk), .reset(reset), .illop(illop), .xadr(xadr), .EXrd(EXrd), .EXPC(EXPC), .EXALUOut(EXALUOut), .EXDatabus3(ForwardBIn), .EXRegWrite(EXRegWrite), .EXMemRead(EXMemRead), .EXMemWrite(EXMemWrite), .EXMemtoReg(EXMemtoReg), .EXBranch_target(Branch_target), .MEMrd(MEMWrite_Reg), .MEMPC(MEMPC), .MEMALUOut(MEMALUOut), .MEMDatabus3(MEMDatabus3), .MEMRegWrite(MEMRegWrite), .MEMMemRead(MEMMemRead), .MEMMemWrite(MEMMemWrite), .MEMMemtoReg(MEMMemtoReg));
 
     // MEM
+    wire [7:0] UART_RXD;
+    wire [7:0] UART_TXD;
+    wire [4:0] UART_CON;
     DataMem DataMem(.clk(clk), .reset(reset), .Address(MEMALUOut), .Write_data(MDRi), .MemRead(MEMMemRead), .MemWrite(MEMMemWrite), .Mem_data(MDRo)); //暂时没有外设
 
     // MEM/WB
-    MEMWBReg MEMWBReg(.clk(clk), .reset(reset), .MEMrd(MEMWrite_Reg), .MEMPC(MEMPC), .MEMRead_data(MDRo), .MEMALUOut(MEMALUOut), .MEMRegWrite(MEMRegWrite), .WBrd(WBWrite_Reg), .WBPC(WBPC), .WBRead_data(WBMDRo), .WBALU_out(WBALU_out), .WBRegWrite(WBRegWrite), .WBMemtoReg(WBMemtoReg));
+    MEMWBReg MEMWBReg(.clk(clk), .reset(reset), .MEMrd(MEMWrite_Reg), .MEMPC(MEMPC), .MEMRead_data(MDRo), .MEMALUOut(MEMALUOut), .MEMRegWrite(MEMRegWrite), .WBrd(WBWrite_Reg), .WBPC(WBPC), .WBRead_data(WBMDRo), .WBALUOut(WBALU_out), .WBRegWrite(WBRegWrite), .WBMemtoReg(WBMemtoReg));
 
-    Hazard Hazard(.IDrs(IDInstruction[25:21]), .IDrt(IDInstruction[20:16]), .EXrs(EXrs), .EXrt(EXrt), .EXrd(EXrd), .EXMemRead(EXMemRead), .MEMRegWrite(MEMRegWrite), .MEMrd(MEMWrite_Reg), .WBRegWrite(WBRegWrite), .WBrd(WBWrite_Reg), .ForwardA(ForwardA), .ForwardB(ForwardB), .stall(stall));
+    Hazard Hazard(.IDrs(IDInstruction[25:21]), .IDrt(IDInstruction[20:16]), .IDrd(IDInstruction[15:11]), .EXrs(EXrs), .EXrt(EXrt), .EXrd(EXrd), .EXMemRead(EXMemRead), .MEMRegWrite(MEMRegWrite), .MEMrd(MEMWrite_Reg), .WBRegWrite(WBRegWrite), .WBrd(WBWrite_Reg), .ForwardA(ForwardA), .ForwardB(ForwardB), .stall(stall));
 
 
 endmodule

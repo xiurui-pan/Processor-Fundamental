@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module DataMem(reset, clk, Address, Write_data, MemRead, MemWrite, Mem_data, led, digi);
+module DataMem(reset, clk, Address, Write_data, MemRead, MemWrite, Mem_data, led, digi, UART_RXD, UART_TXD, UART_CON);
 	//Input Clock Signals
 	input reset;
 	input clk;

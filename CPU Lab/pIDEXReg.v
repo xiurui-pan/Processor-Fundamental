@@ -1,7 +1,7 @@
 module IDEXReg (
     clk, reset, flush, stall, illop, xadr,
     IDrs, IDrt, IDrd, IDShamt, IDFunct, IDPC, IDDatabus1, IDDatabus2, IDExt_out, IDBranch, IDRegWrite, IDRegDst, IDMemRead, IDMemWrite, IDMemtoReg, IDALUSrcA, IDALUSrcB, IDALUOp,
-    EXrs, EXrt, EXrd, EXShamt, EXFunct, EXPC, EXDatabus1, EXDatabus2, EXExt_out, EXBranch, EXRegWrite, EXRegDst, EXMemRead, EXMemWrite, EXMemtoReg, EXALUSrcA, EXALUSrcB, EXALUOp,
+    EXrs, EXrt, EXrd, EXShamt, EXFunct, EXPC, EXDatabus1, EXDatabus2, EXExt_out, EXBranch, EXRegWrite, EXRegDst, EXMemRead, EXMemWrite, EXMemtoReg, EXALUSrcA, EXALUSrcB, EXALUOp
 );
     input clk, reset;
     input flush, stall, illop, xadr;
