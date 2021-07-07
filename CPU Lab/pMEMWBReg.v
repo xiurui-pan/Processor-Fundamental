@@ -18,7 +18,7 @@ module MEMWBReg (
             WBRegWrite <= 0;
             WBrd <= 0;
             WBMemtoReg <= 0;
-            WBPC <= 32'h80000000;
+            WBPC <= 32'h00000000;
             WBRead_data <= 0;
             WBALUOut <= 0;
         end

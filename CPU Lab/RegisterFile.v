@@ -38,8 +38,8 @@ module RegisterFile(reset, clk, RegWrite, Read_register1, Read_register2, Write_
 	reg [31:0] RF_data[31:1];
 	
 	//read data
-	assign Read_data1 = (Read_register1 == 5'b00000)? 32'h00000000: RF_data[Read_register1];
-	assign Read_data2 = (Read_register2 == 5'b00000)? 32'h00000000: RF_data[Read_register2];
+	assign Read_data1 = (Read_register1 == 5'b00000)? 32'h00000000: (Write_register == Read_register1) ? Write_data : RF_data[Read_register1];
+	assign Read_data2 = (Read_register2 == 5'b00000)? 32'h00000000: (Write_register == Read_register2) ? Write_data : RF_data[Read_register2];
 	
 	integer i;
 	always @(posedge reset or posedge clk) begin

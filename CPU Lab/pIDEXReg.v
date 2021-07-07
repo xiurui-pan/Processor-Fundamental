@@ -42,7 +42,7 @@ module IDEXReg (
             EXALUSrcA <= 0;
             EXALUSrcB <= 0;
             if(reset)
-                EXPC <= 32'h80000000;
+                EXPC <= 32'h00000000;
             else
                 EXPC <= 0;
         end
@@ -50,6 +50,7 @@ module IDEXReg (
             EXrs <= IDrs;
             EXrt <= IDrt;
             EXrd <= IDrd;
+            EXPC <= IDPC;
             EXShamt <= IDShamt;
             EXFunct <= IDFunct;
             EXDatabus1 <= IDDatabus1;

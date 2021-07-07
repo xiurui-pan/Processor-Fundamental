@@ -16,7 +16,7 @@ module EXMEMReg(
     always @(posedge clk or posedge reset) begin
         if(reset)begin
             MEMrd <= 0;
-            MEMPC <= 32'h80000000;
+            MEMPC <= 32'h00000000;
             MEMALUOut <= 0;
             MEMDatabus3 <= 0;
             MEMRegWrite <= 0;

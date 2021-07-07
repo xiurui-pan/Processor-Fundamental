@@ -25,7 +25,7 @@ module test_cpu();
     reg reset;
     reg clk;
     
-    PipelineCPU PipelineCPU(reset, clk);
+    Pipeline_CPU PipelineCPU(reset, clk);
     
     initial begin
         reset = 1;

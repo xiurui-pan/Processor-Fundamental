@@ -34,16 +34,17 @@ module Controller(reset, clk, OpCode, Funct,
     assign PCSource = ((OpCode==R_type && (Funct==jr_f || Funct==jalr_f)) || OpCode==j || OpCode == jal) ? 2'b10 : (OpCode==beq) ? 2'b01 : 2'b00;
     assign Branch = (OpCode==beq || OpCode==bne || OpCode==blez || OpCode==bltz || OpCode==bgtz) ? OpCode[2:0] : 3'b0;
     assign RegWrite = (OpCode==sw || OpCode==j || OpCode==beq || OpCode==bne || OpCode==blez || OpCode==bltz || OpCode==bgtz || (OpCode==R_type && Funct==jr_f)) ? 0 : 1;
-    assign RegDst = (OpCode==jal) ? 2'b10 : (OpCode==addi || OpCode==addiu || OpCode==andi || OpCode==slti || OpCode==sltiu || OpCode==lui) ? 2'b00 : 2'b01;
+    assign RegDst = (OpCode==jal) ? 2'b10 : (OpCode==addi || OpCode==addiu || OpCode==andi || OpCode==slti || OpCode==sltiu || OpCode==lui || OpCode==lw || OpCode==sw) ? 2'b00 : 2'b01;
     assign MemRead = (OpCode==lw) ? 1 : 0;
     assign MemWrite = (OpCode==sw) ? 1 : 0;
     assign MemtoReg = ((OpCode==R_type && Funct==jalr_f) || OpCode==jal) ? 2'b10 : (OpCode==lw) ? 2'b00 : 2'b01;
     assign ALUSrcA = (OpCode==R_type && (Funct==sll_f || Funct==sra_f || Funct==srl_f)) ? 1 : 0;
-    assign ALUSrcB = (OpCode==R_type) ? 0 : 1;
+    assign ALUSrcB = (OpCode==R_type || Branch!=0) ? 0 : 1;
     assign ExtOp = (OpCode==R_type && (Funct==sll_f || Funct==srl_f || Funct==sra_f)) ? 0 : 1;
     assign LuiOp = (OpCode==lui) ? 1 : 0;
 
-    assign xadr = ((OpCode[5]==1) || (OpCode[4]==1) && OpCode!=6'h23 && OpCode!=6'h2b) ? 1 : 0;
+    //assign xadr = ((OpCode[5]==1) || (OpCode[4]==1) && OpCode!=6'h23 && OpCode!=6'h2b) ? 1 : 0;
+    assign xadr = 0;
 
     assign ALUOp[3] = OpCode[0];
     assign ALUOp[2:0] = 

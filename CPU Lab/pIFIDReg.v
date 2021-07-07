@@ -6,7 +6,7 @@ module IFIDReg(IFInstruction, IFPC, IDInstruction, IDPC, clk, reset, flush, stal
 
     always @(posedge clk or posedge reset) begin
         if(reset) begin
-            IDPC <= 32'h80000000;
+            IDPC <= 32'h00000000;
             IDInstruction <= 0;
         end
         else if(flush || illop || xadr)begin

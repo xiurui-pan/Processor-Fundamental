@@ -30,7 +30,7 @@ module PC(reset, clk, illop, xadr, PC_i, PC_o);
     //Output PC  
     output reg [31:0] PC_o; 
 
-    parameter RESET = 32'h80000000;
+    parameter RESET = 32'h00000000;
     parameter ILLOP = 32'h80000004;
     parameter XADR = 32'h80000008;
 
