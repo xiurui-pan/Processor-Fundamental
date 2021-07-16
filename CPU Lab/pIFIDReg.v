@@ -1,6 +1,6 @@
-module IFIDReg(IFInstruction, IFPC, IDInstruction, IDPC, clk, reset, flush, stall, illop, xadr);
+module IFIDReg(IFInstruction, IFPC, IDInstruction, IDPC, clk, reset, flush, stall);
     input clk, reset;
-    input flush, stall, illop, xadr;
+    input flush, stall;
     input [31:0] IFInstruction, IFPC;
     output reg [31:0] IDInstruction, IDPC;
 
@@ -9,7 +9,7 @@ module IFIDReg(IFInstruction, IFPC, IDInstruction, IDPC, clk, reset, flush, stal
             IDPC <= 32'h00000000;
             IDInstruction <= 0;
         end
-        else if(flush || illop || xadr)begin
+        else if(flush)begin
             IDPC <= 0;
             IDInstruction <= 0;
         end

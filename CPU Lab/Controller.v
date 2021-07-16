@@ -3,7 +3,7 @@
 module Controller(reset, clk, OpCode, Funct, 
                 Branch, MemWrite, MemRead,
                 MemtoReg, RegDst, RegWrite, ExtOp, LuiOp,
-                ALUSrcA, ALUSrcB, ALUOp, PCSource, xadr);
+                ALUSrcA, ALUSrcB, ALUOp, PCSource);
     //Input Clock Signals
     input reset;
     input clk;
@@ -23,7 +23,6 @@ module Controller(reset, clk, OpCode, Funct,
     output ALUSrcB;
     output [3:0] ALUOp;
     output [1:0] PCSource;
-    output xadr;
 
     parameter lw = 6'h23, sw = 6'h2b, lui = 6'h0f, R_type = 6'h00;
     parameter addi = 6'h08, addiu = 6'h09, andi = 6'h0c, slti = 6'h0a, sltiu = 6'h0b;
@@ -42,9 +41,6 @@ module Controller(reset, clk, OpCode, Funct,
     assign ALUSrcB = (OpCode==R_type || Branch!=0) ? 0 : 1;
     assign ExtOp = (OpCode==R_type && (Funct==sll_f || Funct==srl_f || Funct==sra_f)) ? 0 : 1;
     assign LuiOp = (OpCode==lui) ? 1 : 0;
-
-    //assign xadr = ((OpCode[5]==1) || (OpCode[4]==1) && OpCode!=6'h23 && OpCode!=6'h2b) ? 1 : 0;
-    assign xadr = 0;
 
     assign ALUOp[3] = OpCode[0];
     assign ALUOp[2:0] = 

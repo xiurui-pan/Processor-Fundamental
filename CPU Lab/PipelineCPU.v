@@ -22,12 +22,10 @@ module Pipeline_CPU (reset, clk);
     wire [31:0] PC_next;
 
     wire IFFlush, IDFlush;
-    wire stall, illop, xadr;
+    wire stall;
     wire [1:0] ForwardA, ForwardB;
 
-    assign illop = 0;  //??
-
-    PC PCCtrl(reset, clk, illop, xadr, PC_next, PC_now);
+    PC PCCtrl(reset, clk, PC_next, PC_now);
 
     // IF
     wire [31:0] IFInstruction;
@@ -37,7 +35,7 @@ module Pipeline_CPU (reset, clk);
     wire [31:0] IDInstruction;
     wire [31:0] IDPC;
     IFIDReg IFIDReg(.IFInstruction(IFInstruction), .IFPC(PC_now), .IDInstruction(IDInstruction), .IDPC(IDPC),
-                    .clk(clk), .reset(reset), .flush(IFFlush), .stall(stall), .illop(illop), .xadr(xadr));
+                    .clk(clk), .reset(reset), .flush(IFFlush), .stall(stall)); 
 
     // ID
     wire IDRegWrite;
@@ -57,7 +55,7 @@ module Pipeline_CPU (reset, clk);
 
     Controller control(
         .reset(reset), .clk(clk), .OpCode(IDInstruction[31:26]), .Funct(IDInstruction[5:0]),
-        .Branch(IDBranch), .MemWrite(IDMemWrite),.MemRead(IDMemRead), .xadr(xadr),
+        .Branch(IDBranch), .MemWrite(IDMemWrite),.MemRead(IDMemRead), 
         .MemtoReg(IDMemtoReg), .RegDst(IDRegDst), .RegWrite(IDRegWrite), .ExtOp(ExtOp), 
         .LuiOp(LuiOp), .ALUSrcA(IDALUSrcA), .ALUSrcB(IDALUSrcB), .ALUOp(IDALUOp), .PCSource(IDPCSrc));
 
@@ -93,7 +91,7 @@ module Pipeline_CPU (reset, clk);
     wire [5:0] EXFunct;
     wire [31:0] EXPC, EXDatabus1, EXDatabus2, EXExt_out;
 
-    IDEXReg IDEXReg(.clk(clk), .reset(reset), .flush(IDFlush), .stall(stall), .illop(illop),. xadr(xadr), 
+    IDEXReg IDEXReg(.clk(clk), .reset(reset), .flush(IDFlush), .stall(stall), 
     .IDrs(IDInstruction[25:21]), .IDrt(IDInstruction[20:16]), .IDrd(IDInstruction[15:11]), .IDShamt(IDInstruction[10:6]), .IDFunct(IDInstruction[5:0]), .IDPC(IDPC), .IDDatabus1(IDDatabus1), .IDDatabus2(IDDatabus2), .IDExt_out(IDExt_out), .IDBranch(IDBranch), .IDRegDst(IDRegDst), .IDMemtoReg(IDMemtoReg), .IDALUOp(IDALUOp), .IDRegWrite(IDRegWrite), .IDMemRead(IDMemRead), .IDMemWrite(IDMemWrite), .IDALUSrcA(IDALUSrcA), .IDALUSrcB(IDALUSrcB),
     .EXrs(EXrs), .EXrt(EXrt), .EXrd(EXrd), .EXShamt(EXShamt), .EXFunct(EXFunct), .EXPC(EXPC), .EXDatabus1(EXDatabus1), .EXDatabus2(EXDatabus2), .EXExt_out(EXExt_out), .EXBranch(EXBranch), .EXRegDst(EXRegDst), .EXMemtoReg(EXMemtoReg), .EXALUOp(EXALUOp), .EXRegWrite(EXRegWrite), .EXMemRead(EXMemRead), .EXMemWrite(EXMemWrite), .EXALUSrcA(EXALUSrcA), .EXALUSrcB(EXALUSrcB));
 
@@ -129,7 +127,7 @@ module Pipeline_CPU (reset, clk);
     wire [4:0] MEMWrite_Reg;
     wire [31:0] MEMPC, MDRo, MEMDatabus3;
 
-    EXMEMReg EXMEMReg(.clk(clk), .reset(reset), .illop(illop), .xadr(xadr), .EXrd(EXWrite_Reg), .EXPC(EXPC), .EXALUOut(EXALUOut), .EXDatabus3(EXDatabus2), .EXRegWrite(EXRegWrite), .EXMemRead(EXMemRead), .EXMemWrite(EXMemWrite), .EXMemtoReg(EXMemtoReg), .EXBranch_target(Branch_target), .MEMrd(MEMWrite_Reg), .MEMPC(MEMPC), .MEMALUOut(MEMALUOut), .MEMDatabus3(MEMDatabus3), .MEMRegWrite(MEMRegWrite), .MEMMemRead(MEMMemRead), .MEMMemWrite(MEMMemWrite), .MEMMemtoReg(MEMMemtoReg));
+    EXMEMReg EXMEMReg(.clk(clk), .reset(reset), .EXrd(EXWrite_Reg), .EXPC(EXPC), .EXALUOut(EXALUOut), .EXDatabus3(EXDatabus2), .EXRegWrite(EXRegWrite), .EXMemRead(EXMemRead), .EXMemWrite(EXMemWrite), .EXMemtoReg(EXMemtoReg), .EXBranch_target(Branch_target), .MEMrd(MEMWrite_Reg), .MEMPC(MEMPC), .MEMALUOut(MEMALUOut), .MEMDatabus3(MEMDatabus3), .MEMRegWrite(MEMRegWrite), .MEMMemRead(MEMMemRead), .MEMMemWrite(MEMMemWrite), .MEMMemtoReg(MEMMemtoReg));
 
     // MEM
     wire [7:0] UART_RXD;

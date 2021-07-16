@@ -1,9 +1,9 @@
 module EXMEMReg(
-    clk, reset, illop, xadr,
+    clk, reset,
     EXrd, EXPC, EXALUOut, EXDatabus3, EXRegWrite, EXMemRead, EXMemWrite, EXMemtoReg, EXBranch_target, 
     MEMrd, MEMPC, MEMALUOut, MEMDatabus3, MEMRegWrite, MEMMemRead, MEMMemWrite, MEMMemtoReg
 );
-    input clk, reset, illop, xadr;
+    input clk, reset;
     input EXRegWrite, EXMemWrite, EXMemRead;
     input [1:0] EXMemtoReg;
     input [4:0] EXrd;
@@ -23,16 +23,6 @@ module EXMEMReg(
             MEMMemRead <= 0;
             MEMMemWrite <= 0;
             MEMMemtoReg <= 0;
-        end
-        else if(illop || xadr) begin
-            MEMrd <= 5'd26;
-            MEMPC <= EXBranch_target;
-            MEMALUOut <= 0;
-            MEMDatabus3 <= 0;
-            MEMRegWrite <= (EXBranch_target==32'h4) ? 0 : 1;
-            MEMMemRead <= 0;
-            MEMMemWrite <= 0;
-            MEMMemtoReg <= 2'b11;
         end
         else begin
             MEMrd <= EXrd;
