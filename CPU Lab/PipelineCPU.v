@@ -74,7 +74,7 @@ module Pipeline_CPU (reset, clk);
     wire [1:0] WBMemtoReg;
     wire WBRegWrite;
 
-    assign WBDatabus3 = (WBMemtoReg == 2'b00) ? WBMDRo : (WBMemtoReg == 2'b01) ? WBALU_out : (WBMemtoReg == 2'b10) ? {1'b0, WBPC[30:0]} + 32'd8 : WBPC;
+    assign WBDatabus3 = (WBMemtoReg == 2'b00) ? WBMDRo : (WBMemtoReg == 2'b01) ? WBALU_out : (WBMemtoReg == 2'b10) ? {1'b0, WBPC[30:0]} + WBALU_out : WBPC;
     RegisterFile RF(.reset(reset), .clk(clk), .RegWrite(WBRegWrite), 
                     .Read_register1(IDInstruction[25:21]), .Read_register2(IDInstruction[20:16]), .Write_register(WBWrite_Reg), 
                     .Write_data(WBDatabus3), .Read_data1(IDDatabus1), .Read_data2(IDDatabus2));
