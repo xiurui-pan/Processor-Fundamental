@@ -104,7 +104,7 @@ module Pipeline_CPU (reset, clk);
     wire [31:0] MEMALUOut;
     wire [31:0] ForwardAIn, ForwardBIn;
 
-    assign Branch_target = (EXBranch!=0 && comp==1) ? EXPC + 32'b100 : EXPC;
+    assign Branch_target = (EXBranch!=0 && comp==1) ? EXPC + 32'b100 + EXExt_out : EXPC;
     
     assign EXWrite_Reg = (EXRegDst == 2'b00) ? EXrt :  (EXRegDst == 2'b01) ? EXrd : 5'b11111;
     ALUControl ALUControl(.ALUOp(EXALUOp), .Funct(EXFunct), .ALUConf(ALUConf), .Sign(sign));
@@ -116,7 +116,7 @@ module Pipeline_CPU (reset, clk);
 
     ALU ALU(.ALUConf(ALUConf), .Sign(sign), .In1(ALU_in1), .In2(ALU_in2), .Comp(comp), .Result(EXALUOut), .Branch(EXBranch));
 
-    assign PC_next = (comp == 1) ? Branch_target : (IDPCSrc == 2'b10) ? Jump_target : (stall == 1) ? PC_now : PC_now + 4;
+    assign PC_next = (comp == 1) ? Branch_target : (IDPCSrc == 2'b10) ? Jump_target : (stall == 1 || IFFlush == 1) ? PC_now : PC_now + 4;
     assign IFFlush = (comp == 1 || IDPCSrc != 0) ? 1 : 0;
     assign IDFlush = (comp == 1) ? 1 : 0;
 
@@ -133,7 +133,7 @@ module Pipeline_CPU (reset, clk);
     wire [7:0] UART_RXD;
     wire [7:0] UART_TXD;
     wire [4:0] UART_CON;
-    DataMem DataMem(.clk(clk), .reset(reset), .Address(MEMALUOut), .Write_data(MEMDatabus3), .MemRead(MEMMemRead), .MemWrite(MEMMemWrite), .Mem_data(MDRo)); //暂时没有外设
+    DataMem DataMem(.clk(clk), .reset(reset), .Address(MEMALUOut), .Write_data(MEMDatabus3), .MemRead(MEMMemRead), .MemWrite(MEMMemWrite), .Mem_data(MDRo)); 
 
     // MEM/WB
     MEMWBReg MEMWBReg(.clk(clk), .reset(reset), .MEMrd(MEMWrite_Reg), .MEMPC(MEMPC), .MEMRead_data(MDRo), .MEMALUOut(MEMALUOut), .MEMRegWrite(MEMRegWrite), .MEMMemtoReg(MEMMemtoReg), .WBrd(WBWrite_Reg), .WBPC(WBPC), .WBRead_data(WBMDRo), .WBALUOut(WBALU_out), .WBRegWrite(WBRegWrite), .WBMemtoReg(WBMemtoReg));
