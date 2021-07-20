@@ -18,7 +18,7 @@ module DataMem(reset, clk, Address, Write_data, MemRead, MemWrite, Mem_data, led
 	output reg [11:0] digi;
 	output reg [7:0]  UART_TXD;
 
-    parameter RAM_SIZE = 256;
+    parameter RAM_SIZE = 32'h3fff;
 	parameter RAM_SIZE_BIT = 8;
     
     reg [31:0] RAM_data[RAM_SIZE - 1: 0];

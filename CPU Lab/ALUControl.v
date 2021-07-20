@@ -65,6 +65,7 @@ module ALUControl(ALUOp, Funct, ALUConf, Sign);
 		case (ALUOp[2:0])
 			3'b000: ALUConf <= aluADD;
 			3'b001: ALUConf <= aluSUB;
+			3'b011: ALUConf <= aluOR;
 			3'b100: ALUConf <= aluAND;
 			3'b101: ALUConf <= aluSLT;
 			3'b010: ALUConf <= aluFunct;
