@@ -1,24 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Class: Fundamentals of Digital Logic and Processor
-// Designer: Shulin Zeng
-// 
-// Create Date: 2021/04/30
-// Design Name: MultiCycleCPU
-// Module Name: RegisterFile
-// Project Name: Multi-cycle-cpu
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module RegisterFile(reset, clk, RegWrite, Read_register1, Read_register2, Write_register, Write_data, Read_data1, Read_data2);
 	//Input Clock Signals
@@ -46,7 +26,7 @@ module RegisterFile(reset, clk, RegWrite, Read_register1, Read_register2, Write_
 		if (reset) begin
 			for (i = 1; i < 32; i = i + 1) begin
 				if(i == 29)
-					RF_data[i] <= 32'hfffc;
+					RF_data[i] <= 32'h3ffc;
 				else
 					RF_data[i] <= 32'h00000000;
 			end

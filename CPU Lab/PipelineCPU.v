@@ -5,18 +5,15 @@
 // 
 // Create Date: 2021/06/30
 // Design Name: Pipeline CPU
-// Module Name: Pipeline CPU
-// Project Name: pipeline-cpu
-// Revision:
-// Revision 1.00 - File Created
-// Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module Pipeline_CPU (reset, clk);
+module Pipeline_CPU (reset, clk, led, digi);
     //Input Clock Signals
     input reset;
     input clk;
+    output [7:0] led;
+    output [11:0] digi;
 
     wire [31:0] PC_now;
     wire [31:0] PC_next;
@@ -51,8 +48,6 @@ module Pipeline_CPU (reset, clk);
     wire [31:0] IDDatabus1, IDDatabus2;
     wire ExtOp, LuiOp;
 
-    //assign realPCWrite = PCWrite ? 1 : (PCWriteCond == 1 & zero == 1) ? 1 : 0; 
-
     Controller control(
         .reset(reset), .clk(clk), .OpCode(IDInstruction[31:26]), .Funct(IDInstruction[5:0]),
         .Branch(IDBranch), .MemWrite(IDMemWrite),.MemRead(IDMemRead), 
@@ -64,7 +59,6 @@ module Pipeline_CPU (reset, clk);
 
     wire [31:0] Jump_target, Branch_target;
     assign Jump_target = (IDPCSrc==2'b10 && IDInstruction[31:26]==0) ? IDDatabus1 : (IDPCSrc==2'b10) ? {IDPC[31:28], IDInstruction[25:0], 2'b00} : PC_now + 4;
-
 
     wire [31:0] WBMDRo;
 
@@ -130,10 +124,7 @@ module Pipeline_CPU (reset, clk);
     EXMEMReg EXMEMReg(.clk(clk), .reset(reset), .EXrd(EXWrite_Reg), .EXPC(EXPC), .EXALUOut(EXALUOut), .EXDatabus3(EXDatabus2), .EXRegWrite(EXRegWrite), .EXMemRead(EXMemRead), .EXMemWrite(EXMemWrite), .EXMemtoReg(EXMemtoReg), .EXBranch_target(Branch_target), .MEMrd(MEMWrite_Reg), .MEMPC(MEMPC), .MEMALUOut(MEMALUOut), .MEMDatabus3(MEMDatabus3), .MEMRegWrite(MEMRegWrite), .MEMMemRead(MEMMemRead), .MEMMemWrite(MEMMemWrite), .MEMMemtoReg(MEMMemtoReg));
 
     // MEM
-    wire [7:0] UART_RXD;
-    wire [7:0] UART_TXD;
-    wire [4:0] UART_CON;
-    DataMem DataMem(.clk(clk), .reset(reset), .Address(MEMALUOut), .Write_data(MEMDatabus3), .MemRead(MEMMemRead), .MemWrite(MEMMemWrite), .Mem_data(MDRo)); 
+    DataMem DataMem(.clk(clk), .reset(reset), .Address(MEMALUOut), .Write_data(MEMDatabus3), .MemRead(MEMMemRead), .MemWrite(MEMMemWrite), .Mem_data(MDRo), .led(led), .digi(digi)); 
 
     // MEM/WB
     MEMWBReg MEMWBReg(.clk(clk), .reset(reset), .MEMrd(MEMWrite_Reg), .MEMPC(MEMPC), .MEMRead_data(MDRo), .MEMALUOut(MEMALUOut), .MEMRegWrite(MEMRegWrite), .MEMMemtoReg(MEMMemtoReg), .WBrd(WBWrite_Reg), .WBPC(WBPC), .WBRead_data(WBMDRo), .WBALUOut(WBALU_out), .WBRegWrite(WBRegWrite), .WBMemtoReg(WBMemtoReg));
