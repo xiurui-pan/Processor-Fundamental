@@ -1,13 +1,3 @@
-`timescale 1ns/1ps
-
-module InstructionMem (
-    input [31:0] Address,
-    output reg [31:0] Instruction
-);
-
-always @(*) begin
-    // init instruction memory
-    case (Address[9:2])
    8'd0 : Instruction <= 32'h20057ffc
 ;   8'd1 : Instruction <= 32'h8ca60000
 ;   8'd2 : Instruction <= 32'h8ca40004
@@ -164,7 +154,3 @@ always @(*) begin
 ;   8'd153 : Instruction <= 32'h03e00008
 ;   8'd154 : Instruction <= 32'h20070071
 ;   8'd155 : Instruction <= 32'h03e00008;
-    endcase
-end
-    
-endmodule

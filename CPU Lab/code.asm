@@ -1,8 +1,8 @@
 main:
-    li $a1, 0x7ffc
+    addi $a1, $zero, 0x7ffc
     lw $a2, 0($a1)      #capacity in a2
     lw $a0, 4($a1)      #item_num in a0
-    la $a1, 8($a1)      #item_list in a1
+    addi $a1, $a1, 8      #item_list in a1
 
     sw $ra, 0($sp)      #store ra in sp
     addi $sp, $sp, -4
@@ -10,35 +10,44 @@ main:
 
     lw $ra, 4($sp)      #restore ra in sp
     addi $sp, $sp, 4
-    move $a0, $v0       #print result
+    add $a0, $zero, $v0       #print result
     jal display_bcd
 
 dp_loop:
-    addi $t0, zero, 40     #address bias in $t0
+    addi $t0, $zero, 0x40     #address bias in $t0
     sll $t0, $t0, 2
     sub $t0, $zero, $t0
     add $sp, $sp, $t0   #allocate memory in stack
 
-    li $t0, 0
+    addi $t0, $zero, 0
     init:
         sll $t1, $t0, 2     #init cache_ptr array to 0
         add $t1, $sp, $t1
         sw $zero, 0($t1)
+        addi $t1, $zero, 0x40
         addi $t0, $t0, 1
-        blt $t0, 0x40, init
+        #blt $t0, $t1, init
+        slt $at, $t0, $t1
+        bne $at, $zero, init
 
-    li $t0, 0   #iter1 in t0
+    addi $t0, $zero, 0   #iter1 in t0
     outer_loop:
-        bge $t0, $a0, end_outer_loop
+        #bge $t0, $a0, end_outer_loop
+        slt $at, $t0, $a0
+        beq $at, $zero, end_outer_loop
         sll $t1, $t0, 3
         add $t1, $a1, $t1   #address bias of weight in $t1
         lw $s0, 0($t1)      #weight in s0
         lw $s1, 4($t1)      #val in s1
 
-        move $t2, $a2       #iter2 in t2
+        addi $t2, $zero, $a2       #iter2 in t2
         inner_loop:
-            bltz $t2, end_inner_loop
-            blt $t2, $s0, endif #if j >= weight
+            #blt $t2, $zero, end_inner_loop
+            slt $at, $t2, $zero
+            bne $at, $zero, end_inner_loop
+            #blt $t2, $s0, endif #if j >= weight
+            slt $at, $t2, $s0
+            bne $at, $zero, endif
             sll $t1, $t2, 2     #address of cache_ptr[j] in t1
             add $t1, $sp, $t1
             
@@ -49,7 +58,9 @@ dp_loop:
             add $t3, $t3, $s1   #t3 + val in t3
 
             lw $t4, 0($t1)      #cache[j] in t4
-            ble $t4, $t3, else
+            #ble $t4, $t3, else
+            slt $at, $t3, $t4
+            beq $at, $zero, else
             j endif
             else:
             sw $t3, 0($t1)
@@ -67,7 +78,7 @@ dp_loop:
     add $t1, $sp, $t1
     lw $v0, 0($t1)
 
-    lw $t0, MAX_CAP     #restore sp
+    addi $t0, $zero, 0x40     #restore sp
     #addi $t0, 1
     sll $t0, $t0, 2
     add $sp, $sp, $t0
@@ -95,7 +106,6 @@ display_bcd:
     addi $s7, $zero, 4
 
 scan4:
-    #bne  $s7, $s4, scan3
     sll $s6, $s1, 11
     add $a1, $zero, $t3
     jal bcd_table
