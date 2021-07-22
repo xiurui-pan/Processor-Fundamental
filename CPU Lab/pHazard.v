@@ -1,6 +1,6 @@
-module Hazard (IDrs, IDrt, IDrd, EXrs, EXrt, EXrd, EXMemRead, MEMRegWrite, MEMrd, WBRegWrite, WBrd, ForwardA, ForwardB, stall);
+module Hazard (IDrs, IDrt, EXrs, EXrt, EXrd, EXMemRead, MEMRegWrite, MEMrd, WBRegWrite, WBrd, ForwardA, ForwardB, stall);
     input EXMemRead, MEMRegWrite, WBRegWrite;
-    input[4:0] IDrs, IDrt, IDrd, EXrs, EXrt, EXrd, MEMrd, WBrd;
+    input[4:0] IDrs, IDrt, EXrs, EXrt, EXrd, MEMrd, WBrd;
     output [1:0] ForwardA, ForwardB;
     output stall;
 

@@ -1,13 +1,13 @@
 module EXMEMReg(
     clk, reset,
-    EXrd, EXPC, EXALUOut, EXDatabus3, EXRegWrite, EXMemRead, EXMemWrite, EXMemtoReg, EXBranch_target, 
+    EXrd, EXPC, EXALUOut, EXDatabus3, EXRegWrite, EXMemRead, EXMemWrite, EXMemtoReg,
     MEMrd, MEMPC, MEMALUOut, MEMDatabus3, MEMRegWrite, MEMMemRead, MEMMemWrite, MEMMemtoReg
 );
     input clk, reset;
     input EXRegWrite, EXMemWrite, EXMemRead;
     input [1:0] EXMemtoReg;
     input [4:0] EXrd;
-    input [31:0] EXPC, EXALUOut, EXDatabus3, EXBranch_target;
+    input [31:0] EXPC, EXALUOut, EXDatabus3;
     output reg MEMRegWrite, MEMMemWrite, MEMMemRead;
     output reg [1:0] MEMMemtoReg;
     output reg [4:0] MEMrd;

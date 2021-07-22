@@ -1,12 +1,9 @@
 `timescale 1ns / 1ps
 
-module Controller(reset, clk, OpCode, Funct, 
+module Controller(OpCode, Funct, 
                 Branch, MemWrite, MemRead,
                 MemtoReg, RegDst, RegWrite, ExtOp, LuiOp,
                 ALUSrcA, ALUSrcB, ALUOp, PCSource);
-    //Input Clock Signals
-    input reset;
-    input clk;
     //Input Signals
     input  [5:0] OpCode;
     input  [5:0] Funct;
