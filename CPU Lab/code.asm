@@ -1,5 +1,5 @@
 main:
-    addi $a1, $zero, 0x7ffc
+    addi $a1, $zero, 0x03c
     lw $a2, 0($a1)      #capacity in a2
     lw $a0, 4($a1)      #item_num in a0
     addi $a1, $a1, 8      #item_list in a1

@@ -15,7 +15,7 @@ module DataMem(reset, clk, Address, Write_data, MemRead, MemWrite, Mem_data, led
 	output reg [7:0]  led;
 	output reg [11:0] digi;
 
-    parameter RAM_SIZE = 32'hfff;
+    parameter RAM_SIZE = 32'h200;
 	parameter RAM_SIZE_BIT = 8;
     
     reg [31:0] RAM_data[RAM_SIZE - 1: 0];
@@ -41,28 +41,28 @@ module DataMem(reset, clk, Address, Write_data, MemRead, MemWrite, Mem_data, led
         if(reset)begin
             for(i = 0; i < RAM_SIZE; i = i + 1)
                 RAM_data[i] <= 32'h0;
-			RAM_data[32'h7ff] <= 32'h0A;
-			RAM_data[32'h7fe] <= 32'h0A;
-			RAM_data[32'h7fd] <= 32'h02;
-			RAM_data[32'h7fc] <= 32'h0C;
-			RAM_data[32'h7fb] <= 32'h01;
-			RAM_data[32'h7fa] <= 32'h0A;
-			RAM_data[32'h7f9] <= 32'h03;
-			RAM_data[32'h7f8] <= 32'h14;
-			RAM_data[32'h7f7] <= 32'h02;
-			RAM_data[32'h7f6] <= 32'h0F;
-			RAM_data[32'h7f5] <= 32'h01;
-			RAM_data[32'h7f4] <= 32'h08;
-			RAM_data[32'h7f3] <= 32'h01;
-			RAM_data[32'h7f2] <= 32'h0D;
-			RAM_data[32'h7f1] <= 32'h03;
-			RAM_data[32'h7f0] <= 32'h10;
-			RAM_data[32'h7ef] <= 32'h02;
-			RAM_data[32'h7ee] <= 32'h08;
-			RAM_data[32'h7ed] <= 32'h05;
-			RAM_data[32'h7ec] <= 32'h11;
-			RAM_data[32'h7eb] <= 32'h04;
-			RAM_data[32'h7ea] <= 32'h07;
+			RAM_data[32'h00f] <= 32'h0A;
+			RAM_data[32'h010] <= 32'h0A;
+			RAM_data[32'h011] <= 32'h02;
+			RAM_data[32'h012] <= 32'h0C;
+			RAM_data[32'h013] <= 32'h01;
+			RAM_data[32'h014] <= 32'h0A;
+			RAM_data[32'h015] <= 32'h03;
+			RAM_data[32'h016] <= 32'h14;
+			RAM_data[32'h017] <= 32'h02;
+			RAM_data[32'h018] <= 32'h0F;
+			RAM_data[32'h019] <= 32'h01;
+			RAM_data[32'h01a] <= 32'h08;
+			RAM_data[32'h01b] <= 32'h01;
+			RAM_data[32'h01c] <= 32'h0D;
+			RAM_data[32'h01d] <= 32'h03;
+			RAM_data[32'h01e] <= 32'h10;
+			RAM_data[32'h01f] <= 32'h02;
+			RAM_data[32'h020] <= 32'h08;
+			RAM_data[32'h021] <= 32'h05;
+			RAM_data[32'h022] <= 32'h11;
+			RAM_data[32'h023] <= 32'h04;
+			RAM_data[32'h024] <= 32'h07;
 			led <= 0;
 			digi <= 0;
 		end

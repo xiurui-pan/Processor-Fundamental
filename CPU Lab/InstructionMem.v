@@ -8,7 +8,7 @@ module InstructionMem (
 always @(*) begin
     // init instruction memory
     case (Address[9:2])
-   8'd0 : Instruction <= 32'h20057ffc
+    8'd0 : Instruction <= 32'h2005003c
 ;   8'd1 : Instruction <= 32'h8ca60000
 ;   8'd2 : Instruction <= 32'h8ca40004
 ;   8'd3 : Instruction <= 32'h20a50008
