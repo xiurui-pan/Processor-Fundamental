@@ -20,15 +20,15 @@ dp_loop:
     add $sp, $sp, $t0   #allocate memory in stack
 
     addi $t0, $zero, 0
-    init:
-        sll $t1, $t0, 2     #init cache_ptr array to 0
-        add $t1, $sp, $t1
-        sw $zero, 0($t1)
-        addi $t1, $zero, 0x40
-        addi $t0, $t0, 1
+    #init:
+    #    sll $t1, $t0, 2     #init cache_ptr array to 0
+    #    add $t1, $sp, $t1
+    #    sw $zero, 0($t1)
+    #    addi $t1, $zero, 0x40
+    #    addi $t0, $t0, 1
         #blt $t0, $t1, init
-        slt $at, $t0, $t1
-        bne $at, $zero, init
+    #    slt $at, $t0, $t1
+    #    bne $at, $zero, init
 
     addi $t0, $zero, 0   #iter1 in t0
     outer_loop:
@@ -40,7 +40,7 @@ dp_loop:
         lw $s0, 0($t1)      #weight in s0
         lw $s1, 4($t1)      #val in s1
 
-        addi $t2, $zero, $a2       #iter2 in t2
+        add $t2, $zero, $a2       #iter2 in t2
         inner_loop:
             #blt $t2, $zero, end_inner_loop
             slt $at, $t2, $zero

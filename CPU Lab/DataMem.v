@@ -16,7 +16,7 @@ module DataMem(reset, clk, Address, Write_data, MemRead, MemWrite, Mem_data, led
 	output reg [11:0] digi;
 
     parameter RAM_SIZE = 32'h200;
-	parameter RAM_SIZE_BIT = 8;
+	parameter RAM_SIZE_BIT = 10;
     
     reg [31:0] RAM_data[RAM_SIZE - 1: 0];
 

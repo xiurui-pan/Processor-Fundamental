@@ -1,5 +1,5 @@
 .data
-    input_file: .asciiz "test.dat"
+    input_file: .asciiz "test2.dat"
     .align 4
     in_buffer: .space 0x800
     MAX_CAP: .byte 64
