@@ -1,12 +1,12 @@
 module clk_gen(
     input       clk, 
     input       reset, 
-    input[22:0] CNT,
+    input[31:0] CNT,
     output      clk_1Ko
 );
 
 reg             clk_1K; 
-reg     [15:0]  count;
+reg     [31:0]  count;
 
 assign clk_1Ko = clk_1K;
 

@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module RegisterFile(reset, clk, RegWrite, Read_register1, Read_register2, Write_register, Write_data, Read_data1, Read_data2);
+module RegisterFile(reset, clk, RegWrite, Read_register1, Read_register2, Write_register, Write_data, Read_data1, Read_data2, a0);
 	//Input Clock Signals
 	input reset;
 	input clk;
@@ -14,12 +14,14 @@ module RegisterFile(reset, clk, RegWrite, Read_register1, Read_register2, Write_
 	//Output Data Signals
 	output [31:0] Read_data1;
 	output [31:0] Read_data2;
+	output [31:0] a0;
 	
 	reg [31:0] RF_data[31:1];
 	
 	//read data
 	assign Read_data1 = (Read_register1 == 5'b00000)? 32'h00000000: (Write_register == Read_register1) ? Write_data : RF_data[Read_register1];
 	assign Read_data2 = (Read_register2 == 5'b00000)? 32'h00000000: (Write_register == Read_register2) ? Write_data : RF_data[Read_register2];
+	assign a0 = RF_data[9];
 	
 	integer i;
 	always @(posedge reset or posedge clk) begin

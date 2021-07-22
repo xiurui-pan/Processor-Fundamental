@@ -25,8 +25,6 @@ module DataMem(reset, clk, Address, Write_data, MemRead, MemWrite, Mem_data, led
 		if(MemRead)begin
 			if(Address[31:28] == 4'd4)begin
 				case(Address)
-					32'h4000000C: Mem_data <= {24'h0, led};
-					32'h40000010: Mem_data <= {20'h0, digi};
 					default: Mem_data <= 32'h0;
 				endcase
 			end
@@ -63,13 +61,13 @@ module DataMem(reset, clk, Address, Write_data, MemRead, MemWrite, Mem_data, led
 			RAM_data[32'h022] <= 32'h11;
 			RAM_data[32'h023] <= 32'h04;
 			RAM_data[32'h024] <= 32'h07;
-			led <= 0;
+			//led <= 0;
 			digi <= 0;
 		end
         else if(MemWrite)begin
 			if(Address[31:28] == 4'd4)begin
 				case(Address)
-					32'h4000000C: led <= Write_data[7:0];
+					//32'h4000000C: led <= Write_data[7:0];
 					32'h40000010: digi <= Write_data[11:0];
 					default: ;
 				endcase

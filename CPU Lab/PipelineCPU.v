@@ -18,13 +18,14 @@ module Pipeline_CPU (reset, clk, led, digi, lowPC);
 
     wire [31:0] PC_now;
     wire [31:0] PC_next;
+    wire [31:0] a0;
 
     wire IFFlush, IDFlush;
     wire stall;
     wire [1:0] ForwardA, ForwardB;
 
     PC PCCtrl(reset, clk, PC_next, PC_now);
-    assign lowPC = PC_now[7:0];
+    assign lowPC = a0[7:0];
 
     // IF
     wire [31:0] IFInstruction;
@@ -73,7 +74,7 @@ module Pipeline_CPU (reset, clk, led, digi, lowPC);
     assign WBDatabus3 = (WBMemtoReg == 2'b00) ? WBMDRo : (WBMemtoReg == 2'b01) ? WBALU_out : (WBMemtoReg == 2'b10) ? {1'b0, WBPC[30:0]} + 4 : WBPC;
     RegisterFile RF(.reset(reset), .clk(clk), .RegWrite(WBRegWrite), 
                     .Read_register1(IDInstruction[25:21]), .Read_register2(IDInstruction[20:16]), .Write_register(WBWrite_Reg), 
-                    .Write_data(WBDatabus3), .Read_data1(IDDatabus1), .Read_data2(IDDatabus2_));
+                    .Write_data(WBDatabus3), .Read_data1(IDDatabus1), .Read_data2(IDDatabus2_), .a0(a0));
 
     // ID/EX
     wire EXRegWrite;
