@@ -6,7 +6,7 @@ module top(
     output [3:0] AN
 );
 
-    parameter bcd_clock_div = 32'd5000000; 
+    parameter bcd_clock_div = 32'd500000; 
 
     wire [7:0]  lowPC;
     wire bcd_clko;

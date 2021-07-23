@@ -25,7 +25,7 @@ module Pipeline_CPU (reset, clk, led, digi, lowPC);
     wire [1:0] ForwardA, ForwardB;
 
     PC PCCtrl(reset, clk, PC_next, PC_now);
-    assign lowPC = a0[7:0];
+    assign lowPC = digi[7:0];
 
     // IF
     wire [31:0] IFInstruction;

@@ -165,51 +165,51 @@ bcd_table:
     beq         $a2, $zero, fifteen
 
 zero:
-    addi	    $a3, $zero, 0x3f
+    addi	    $a3, $zero, 0xc0
     jr		    $ra
 one:
-    addi        $a3, $zero, 0x06
+    addi        $a3, $zero, 0xf9
     jr          $ra
 two:
-    addi        $a3, $zero, 0x5b
+    addi        $a3, $zero, 0xa4
     jr          $ra
 three:
-    addi        $a3, $zero, 0x4f
+    addi        $a3, $zero, 0xb0
     jr          $ra
 four:
-    addi        $a3, $zero, 0x66
+    addi        $a3, $zero, 0x99
     jr          $ra
 five:
-    addi        $a3, $zero, 0x6d
+    addi        $a3, $zero, 0x92
     jr          $ra
 six:
-    addi        $a3, $zero, 0x7d
+    addi        $a3, $zero, 0x82
     jr          $ra
 seven:
-    addi        $a3, $zero, 0x07
+    addi        $a3, $zero, 0xf8
     jr          $ra
 eight:
-    addi        $a3, $zero, 0x7f
+    addi        $a3, $zero, 0x80
     jr          $ra
 nine:
-    addi        $a3, $zero, 0x6f
+    addi        $a3, $zero, 0x90
     jr          $ra
 ten:
-    addi        $a3, $zero, 0x77
+    addi        $a3, $zero, 0x88
     jr          $ra
 eleven:
-    addi        $a3, $zero, 0x7c
+    addi        $a3, $zero, 0x83
     jr          $ra
 twelve:
-    addi        $a3, $zero, 0x58
+    addi        $a3, $zero, 0xa7
     jr          $ra
 thirteen:
-    addi        $a3, $zero, 0x5e
+    addi        $a3, $zero, 0xa1
     jr          $ra
 fourteen:
-    addi        $a3, $zero, 0x79
+    addi        $a3, $zero, 0x86
     jr          $ra
 fifteen:
-    addi        $a3, $zero, 0x71
+    addi        $a3, $zero, 0x8e
     jr          $ra
     
